@@ -8,10 +8,10 @@ You must have tshark installed to use it.
 
 ## How to use?
 
-1. Install the desktop client of the telegram messenger on Linux or Mac.
-2. Install tshark.
-3. Call and wait for an answer
-4. Run the script
+1. Install [Telegram desktop](https://desktop.telegram.org/) client on Linux or Mac.
+2. Install tshark (**sudo apt install tshark** or download for macOS [here](https://www.wireshark.org/download.html), it's comes with wireshark).
+3. Call and wait for an answer. **Don't run script before answer**!
+4. Run the script after answer.
 5. Profit! You have received the IP address of the interlocutor.
 
 ### Get & Run
@@ -22,5 +22,5 @@ $ chmod +x tg_get_ip.sh
 $ sudo ./tg_get_ip.sh
 ```
 
-PS. Possible work with termux on android smrtphone. Root authority is required to capture traffic.
+**PS.** Possible work with termux on android smrtphone. Root authority is required to capture traffic.
 
