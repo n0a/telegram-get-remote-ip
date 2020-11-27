@@ -19,7 +19,7 @@ You must have tshark installed to use it.
 ```sh
 $ wget https://raw.githubusercontent.com/n0a/telegram-get-caller-ip/main/tg_get_ip.sh 
 $ chmod +x tg_get_ip.sh
-sudo ./tg_get_ip.sh
+$ sudo ./tg_get_ip.sh
 ```
 
 PS. Possible work with termux on android smrtphone. Root authority is required to capture traffic.
