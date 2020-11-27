@@ -1,6 +1,8 @@
 # Telegram get caller IP
 
-This script is intended to be used to determine the IP address of the interlocutor in the telegram messenger. You must have tshark installed to use it.
+This script is intended to be used to determine the IP address of the interlocutor in the telegram messenger. 
+
+You must have tshark installed to use it.
 
 ![Get caller IP](https://i.imgur.com/2Qlc3Kt.png)
 
@@ -15,7 +17,8 @@ This script is intended to be used to determine the IP address of the interlocut
 ### Get & Run
 
 ```sh
-wget https://raw.githubusercontent.com/n0a/telegram-get-caller-ip/main/tg_get_ip.sh && chmod +x tg_get_ip.sh
+wget https://raw.githubusercontent.com/n0a/telegram-get-caller-ip/main/tg_get_ip.sh 
+chmod +x tg_get_ip.sh
 ./tg_get_ip.sh
 ```
 
