@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# This is tool for get telegram caller IP address by using XOR-MAPPED-ADDRESS.
-# Tested on macOS Catalina and Kali Linux. Probably will work with root android phone.
+# This script is intended to be used to determine the IP address of the interlocutor in the telegram messenger.
+# You must have tshark installed to use it.
+# Tested on macOS Catalina and Kali Linux. 
+# Probably will be working on android phone with root permissions and termux.
 # by n0a 2020
 # https://n0a.pw
 
@@ -17,8 +19,9 @@ then
 	echo "[+] RedHat based: sudo yum install -y tshark"
 	exit 1
 fi
-echo "[+] Telegram get caller IP v0.1"
-echo "[+] Start tshark for catch traffic. Wait for $CAP_DURATION seconds..."
+
+echo "[+] Telegram get caller IP by n0a"
+echo "[+] Starting tshark for catch traffic. Wait for $CAP_DURATION seconds..."
 
 tshark -w $CAP_PATH -a duration:$CAP_DURATION > /dev/null 2>&1
 if [ $? -eq 0 ]; then
@@ -35,6 +38,7 @@ else
 	echo "[-] Error converting pcap from $CAP_PATH to $CAP_TEXT."
 	exit 1
 fi
+
 if grep -q "STUN 106" $CAP_TEXT
 then 
 	echo "[+] Telegram traffic was found.";
@@ -49,9 +53,7 @@ fi
 TG_OUT=$(cat $CAP_TEXT | grep "STUN 106" | sed 's/^.*XOR-MAPPED-ADDRESS: //' | awk '{match($0,/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/); ip = substr($0,RSTART,RLENGTH); print ip}' | awk '!seen[$0]++')
 IP_1=$(echo $TG_OUT | awk '{print $1}')
 IP_2=$(echo $TG_OUT | awk '{print $2}')
-#echo $IP_1
-#echo $IP_2
-#echo $MY_IP
+
 if [ $MY_IP == $IP_1 ]; then
 	IP=$IP_2
 elif [ $MY_IP == $IP_2 ]; then
@@ -60,14 +62,16 @@ else
 	IP="[-] Sorry. IP not found."
 	exit 1
 fi
+
 HOST=$(host $IP)
 echo "[+] "
 echo "[+] IP:   $IP"
 echo "[+] HOST: $HOST"
 echo "[+] "
+
 rm $CAP_PATH && rm $CAP_TEXT
 if [ $? -eq 0 ]; then
-	echo "[+] Cleanup temporary files."
+	echo "[+] Cleanup."
 else
 	echo "[-] Error cleanup. Check $CAP_PATH and $CAP_TEXT."
 	exit 1
