@@ -1,4 +1,4 @@
-# Telegram get caller IP
+# Telegram get remote IP
 
 This script is intended to be used to determine the IP address of the interlocutor in the telegram messenger. 
 
