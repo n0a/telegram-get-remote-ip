@@ -1,0 +1,11 @@
+appdirs==1.4.4
+certifi==2023.7.22
+charset-normalizer==3.2.0
+idna==3.4
+lxml==4.9.3
+netifaces==0.11.0
+packaging==23.1
+pyshark==0.6
+requests==2.31.0
+termcolor==2.3.0
+urllib3==2.0.4
