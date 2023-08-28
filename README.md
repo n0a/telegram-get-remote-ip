@@ -26,13 +26,13 @@ $ cd telegram-get-remote-ip
 $ python3 -m venv venv
 $ source ./venv/bin/activate
 $ sudo pip3 install -r requirements.txt
-$ sudo python3 get_ip.py
+$ sudo python3 tg_get_ip.py
 ```
 
 Or specify the interface immediately at startup:
 
 ```sh
-$ sudo python3 -i en0 get_ip.py
+$ sudo python3 -i en0 tg_get_ip.py
 ```
 
 **PS.** Possible work with termux on android smartphones. Root authority is required to capture traffic.
