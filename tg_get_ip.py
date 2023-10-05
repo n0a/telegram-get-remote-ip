@@ -15,10 +15,10 @@ import socket
 import sys
 import os
 import platform
-import winreg
 
 def get_wireshark_install_path_from_registry():
     try:
+        import winreg
         registry_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Wireshark")
         value, _ = winreg.QueryValueEx(registry_key, "InstallLocation")
         winreg.CloseKey(registry_key)
