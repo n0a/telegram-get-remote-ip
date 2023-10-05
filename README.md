@@ -3,8 +3,11 @@
 ## New 2023 version written in python, against bash.
 
 This script is intended to be used to determine the IP address of the interlocutor in the telegram messenger. 
-
 You must have tshark installed to use it.
+
+Working on **MacOS**, **Linux** and **Windows**.
+
+Thx [@WonderMr](https://github.com/WonderMr) for adding Windows support and other improovements.
 
 ***Attention! To determine the IP address, you must be in each other's contacts.***
 
