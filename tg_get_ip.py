@@ -14,13 +14,31 @@ import pyshark
 import socket
 import sys
 import os
+import platform
+import winreg
 
+def get_wireshark_install_path_from_registry():
+    try:
+        registry_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Wireshark")
+        value, _ = winreg.QueryValueEx(registry_key, "InstallLocation")
+        winreg.CloseKey(registry_key)
+        return value
+    except WindowsError:
+        return None
 
 def check_tshark_availability():
     """Check Tshark install."""
-    tshark_path = os.popen('which tshark').read().strip()
+    wireshark_path = None
+    if platform.system() == "Windows":
+        wireshark_path = get_wireshark_install_path_from_registry()
+    elif platform.system() == "Darwin":
+        wireshark_path = "/Applications/Wireshark.app/Contents/MacOS"
+    elif platform.system() == "Linux":
+        wireshark_path = os.popen('which wireshark').read().strip()
+        if os.path.isfile(wireshark_path):
+            wireshark_path = os.path.dirname(wireshark_path)    
 
-    if not tshark_path:
+    if not wireshark_path:
         os_type = platform.system()
         if os_type == "Linux":
             print("Install tshark first: sudo apt update && apt install tshark")
@@ -31,7 +49,6 @@ def check_tshark_availability():
         sys.exit(1)
     else:
         print("[+] tshark is available.")
-
 
 # Telegram AS list of excluded IP ranges
 EXCLUDED_NETWORKS = ['91.108.13.0/24', '149.154.160.0/21', '149.154.160.0/22',
@@ -50,7 +67,6 @@ def get_hostname(ip):
     except socket.herror:
         return None
 
-
 def get_my_ip():
     """Retrieve the external IP address."""
     try:
@@ -58,7 +74,6 @@ def get_my_ip():
     except Exception as e:
         print(f"[!] Error fetching external IP: {e}")
         return None
-
 
 def get_whois_info(ip):
     """Retrieve whois data for the given IP."""
@@ -110,6 +125,12 @@ def choose_interface():
     print("[+] Available interfaces:")
     for idx, iface in enumerate(interfaces, 1):
         print(f"{idx}. {iface}")
+        try:
+            ip_address = netifaces.ifaddresses(iface)[netifaces.AF_INET][0]['addr']
+            print(f"[+] Selected interface: {iface} IP address: {ip_address}")
+        except KeyError:
+            print("[!] Unable to retrieve IP address for the selected interface.")
+
     choice = int(input("[+] Enter the number of the interface you want to use: "))
     return interfaces[choice - 1]
 
@@ -117,11 +138,14 @@ def choose_interface():
 def extract_stun_xor_mapped_address(interface):
     """Capture packets and extract the IP address from STUN protocol."""
     print("[+] Capturing traffic, please wait...")
-
+    if platform.system() == "Windows":
+        interface = "\\Device\\NPF_"+interface
     cap = pyshark.LiveCapture(interface=interface, display_filter="stun")
     my_ip = get_my_ip()
+    resolved = {}
+    whois = {}
 
-    for packet in cap.sniff_continuously(packet_count=250):
+    for packet in cap.sniff_continuously(packet_count=999999):
         if hasattr(packet, 'ip'):
             src_ip = packet.ip.src
             dst_ip = packet.ip.dst
@@ -129,9 +153,19 @@ def extract_stun_xor_mapped_address(interface):
             if is_excluded_ip(src_ip) or is_excluded_ip(dst_ip):
                 continue
 
+            if src_ip not in resolved:
+                resolved[src_ip] = f"{src_ip}({get_hostname(src_ip)})"
+            if dst_ip not in resolved:
+                resolved[dst_ip] = f"{dst_ip}({get_hostname(dst_ip)})"
+            if src_ip not in whois:
+                whois[src_ip] = get_whois_info(src_ip)
+            if dst_ip not in whois:
+                whois[dst_ip] = get_whois_info(dst_ip)
             if packet.stun:
                 xor_mapped_address = packet.stun.get_field_value('stun.att.ipv4')
-
+                print(f"[+] Found STUN packet: {resolved[src_ip]} ({whois[src_ip].get('org', 'N/A')}) -> ({resolved[dst_ip]} {whois[dst_ip].get('org', 'N/A')}). it's xor_mapped_address: {xor_mapped_address}")
+                #for field in packet.stun._all_fields:
+                    #print(f'{field} = {packet.stun.get_field_value(field)}')
                 if xor_mapped_address:
                     if xor_mapped_address != my_ip:
                         return xor_mapped_address
