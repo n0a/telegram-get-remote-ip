@@ -40,6 +40,20 @@ $ sudo python3 -i en0 tg_get_ip.py
 
 **PS.** Possible work with termux on android smartphones. Root authority is required to capture traffic.
 
+
+### Docker
+Alternatively to the previous Ubuntu + pyenv way of running it, a Dockerfile is provided, just build it with:
+
+```sh
+$ docker build ./ -t telegram-get-remote-ip
+```
+
+And run it with:
+
+```sh
+$ docker run -it --cap-add=NET_RAW --cap-add=NET_ADMIN telegram-get-remote-ip
+```
+
 ## Для русскоязыных пользователей
 
 Более подробно об утилите можно почитать у меня в блоге: https://n0a.pw/telegram-get-remote-ip/

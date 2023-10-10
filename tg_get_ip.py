@@ -35,8 +35,11 @@ def check_tshark_availability():
         wireshark_path = "/Applications/Wireshark.app/Contents/MacOS"
     elif platform.system() == "Linux":
         wireshark_path = os.popen('which wireshark').read().strip()
+        tshark_path = os.popen('which tshark').read().strip()
         if os.path.isfile(wireshark_path):
-            wireshark_path = os.path.dirname(wireshark_path)    
+            wireshark_path = os.path.dirname(wireshark_path)
+        elif os.path.isfile(tshark_path):
+            wireshark_path = os.path.dirname(tshark_path)
 
     if not wireshark_path:
         os_type = platform.system()
