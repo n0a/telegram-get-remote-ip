@@ -9,6 +9,8 @@ Working on **MacOS**, **Linux** and **Windows**.
 
 Thx [@WonderMr](https://github.com/WonderMr) for adding Windows support and other improovements.
 
+TechCrunch wrote about the utility — [Telegram is still leaking user IP addresses to contacts](https://techcrunch.com/2023/10/19/telegram-is-still-leaking-user-ip-addresses-to-contacts/)
+
 ***Attention! To determine the IP address, you must be in each other's contacts.***
 
 ![Get caller IP](https://i.imgur.com/thW5I0x.png)
